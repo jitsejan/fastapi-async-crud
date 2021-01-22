@@ -11,6 +11,8 @@ requests = "*"
 databases = {extras = ["postgresql"], version = "*"}
 asyncpg = "*"
 psycopg2 = "*"
+isort = "*"
+flake8 = "*"
 
 [dev-packages]
 
