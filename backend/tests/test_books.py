@@ -14,10 +14,14 @@ def test_create_book(test_app, monkeypatch):
 
     monkeypatch.setattr(crud, "post", mock_post)
 
-    response = test_app.post("/books/", data=json.dumps(test_request_payload),)
+    response = test_app.post(
+        "/books/",
+        data=json.dumps(test_request_payload),
+    )
 
     assert response.status_code == 201
     assert response.json() == test_response_payload
+
 
 @pytest.mark.parametrize(
     "payload, status_code",
@@ -25,11 +29,13 @@ def test_create_book(test_app, monkeypatch):
         [{"title": "", "author": "Fake author"}, 422],
         [{"title": "Fake title", "author": ""}, 422],
         [{"title": "", "author": ""}, 422],
-    ], ids=["empty-title", "empty-author", "both-empty"]
+    ],
+    ids=["empty-title", "empty-author", "both-empty"],
 )
 def test_create_books_invalid_json_missing_author(test_app, payload, status_code):
     response = test_app.post("/books/", data=json.dumps(payload))
     assert response.status_code == status_code
+
 
 def test_read_book(test_app, monkeypatch):
     test_data = {"id": 1, "title": "Test Title", "author": "Fake author"}
@@ -98,7 +104,15 @@ def test_update_book(test_app, monkeypatch):
         [1, {"title": "Fake title", "author": ""}, 422],
         [1, {"title": "", "author": "Fake author"}, 422],
         [0, {"title": "", "author": ""}, 422],
-    ], ids=["empty-payload", "missing-author", "invalid-id", "empty-author", "empty-title", "both-empty"]
+    ],
+    ids=[
+        "empty-payload",
+        "missing-author",
+        "invalid-id",
+        "empty-author",
+        "empty-title",
+        "both-empty",
+    ],
 )
 def test_update_book_invalid(test_app, monkeypatch, id, payload, status_code):
     async def mock_get(id):
@@ -106,7 +120,10 @@ def test_update_book_invalid(test_app, monkeypatch, id, payload, status_code):
 
     monkeypatch.setattr(crud, "get", mock_get)
 
-    response = test_app.put(f"/books/{id}/", data=json.dumps(payload),)
+    response = test_app.put(
+        f"/books/{id}/",
+        data=json.dumps(payload),
+    )
     assert response.status_code == status_code
 
 
@@ -127,12 +144,25 @@ def test_remove_book(test_app, monkeypatch):
     assert response.status_code == 200
     assert response.json() == test_data
 
+
 @pytest.mark.parametrize(
     "id, status_code, detail",
     [
         [999, 404, "Book not found"],
-        [0, 422, [{'loc': ['path', 'id'], 'msg': 'ensure this value is greater than 0', 'type': 'value_error.number.not_gt', 'ctx': {'limit_value': 0}}]],
-    ], ids=["non-existing-id", "wrong-id"]
+        [
+            0,
+            422,
+            [
+                {
+                    "loc": ["path", "id"],
+                    "msg": "ensure this value is greater than 0",
+                    "type": "value_error.number.not_gt",
+                    "ctx": {"limit_value": 0},
+                }
+            ],
+        ],
+    ],
+    ids=["non-existing-id", "wrong-id"],
 )
 def test_remove_book_incorrect_id(test_app, monkeypatch, id, status_code, detail):
     async def mock_get(id):

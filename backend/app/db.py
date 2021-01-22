@@ -1,8 +1,7 @@
 import os
 
 from databases import Database
-from sqlalchemy import (Column, DateTime, Integer, MetaData, String, Table,
-                        create_engine)
+from sqlalchemy import Column, DateTime, Integer, MetaData, String, Table, create_engine
 from sqlalchemy.sql import func
 
 host = os.environ["POSTGRES_HOST"]

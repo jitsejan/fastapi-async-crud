@@ -17,19 +17,27 @@ async def create_book(payload: BookSchema):
     }
     return response_object
 
+
 @router.get("/{id}/", response_model=BookDB)
-async def read_book(id: int = Path(..., gt=0),):
+async def read_book(
+    id: int = Path(..., gt=0),
+):
     book = await crud.get(id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
     return book
 
+
 @router.get("/", response_model=List[BookDB])
 async def read_all_books():
     return await crud.get_all()
 
+
 @router.put("/{id}/", response_model=BookDB)
-async def update_book(payload: BookSchema, id: int = Path(..., gt=0),):
+async def update_book(
+    payload: BookSchema,
+    id: int = Path(..., gt=0),
+):
     book = await crud.get(id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
@@ -42,6 +50,7 @@ async def update_book(payload: BookSchema, id: int = Path(..., gt=0),):
         "author": payload.author,
     }
     return response_object
+
 
 @router.delete("/{id}/", response_model=BookDB)
 async def delete_book(id: int = Path(..., gt=0)):
