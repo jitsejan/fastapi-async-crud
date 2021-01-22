@@ -1,7 +1,6 @@
-from fastapi import FastAPI
-
 from app.api import books, healthcheck
-from app.db import engine, metadata, database
+from app.db import database, engine, metadata
+from fastapi import FastAPI
 
 metadata.create_all(engine)
 app = FastAPI()

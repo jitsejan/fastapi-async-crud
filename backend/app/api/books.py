@@ -1,7 +1,8 @@
+from typing import List
+
 from app.api import crud
 from app.api.models import BookDB, BookSchema
 from fastapi import APIRouter, HTTPException, Path
-from typing import List
 
 router = APIRouter()
 
