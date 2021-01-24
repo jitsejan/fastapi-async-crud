@@ -112,8 +112,9 @@
 </template>
 
 <script>
-import axios from 'axios';
 import Alert from './Alert.vue';
+import BookDataService from "../services/BookDataService";
+
 export default {
   data() {
     return {
@@ -136,8 +137,7 @@ export default {
   },
   methods: {
     getBooks() {
-      const path = 'http://localhost:8000/books';
-      axios.get(path)
+      BookDataService.getAll()
         .then((res) => {
           this.books = res.data;
         })
@@ -147,8 +147,7 @@ export default {
         });
     },
     addBook(payload) {
-      const path = 'http://localhost:8000/books';
-      axios.post(path, payload)
+      BookDataService.create(payload)
         .then(() => {
           this.getBooks();
           this.message = 'Book added!';
@@ -195,8 +194,7 @@ export default {
       this.updateBook(payload, this.editForm.id);
     },
     updateBook(payload, bookID) {
-      const path = `http://localhost:8000/books/${bookID}`;
-      axios.put(path, payload)
+      BookDataService.update(bookID, payload)
         .then(() => {
           this.getBooks();
           this.message = 'Book updated!';
@@ -215,8 +213,7 @@ export default {
       this.getBooks(); // why?
     },
     removeBook(bookID) {
-      const path = `http://localhost:8000/books/${bookID}`;
-      axios.delete(path)
+      BookDataService.delete(bookID)
         .then(() => {
           this.getBooks();
           this.message = 'Book removed!';
