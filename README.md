@@ -25,5 +25,6 @@ $ uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
 ## Sources
 - https://fastapi.tiangolo.com/tutorial/sql-databases/
 - https://testdriven.io/blog/fastapi-crud/
-- https://testdriven.io/blog/developing-a-single-page-app-with-flask-and-vuejs/#conclusion
+- https://testdriven.io/blog/developing-a-single-page-app-with-flask-and-vuejs
 - https://bezkoder.com/vue-js-crud-app/
+- https://testdriven.io/blog/developing-a-single-page-app-with-flask-and-vuejs

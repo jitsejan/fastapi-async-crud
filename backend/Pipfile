@@ -4,14 +4,17 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-asyncpg = "*"
+fastapi = "==0.63.0"
+uvicorn = "==0.13.3"
+pytest = "*"
+requests = "*"
 databases = {extras = ["postgresql"], version = "*"}
-black = "*"
+asyncpg = "*"
+psycopg2 = "*"
+isort = "*"
+flake8 = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.9"
-
-[pipenv]
-allow_prereleases = true
