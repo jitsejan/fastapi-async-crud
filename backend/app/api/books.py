@@ -1,14 +1,14 @@
 from typing import List
 
 from app.api import crud
-from app.api.models import BookDB, BookSchema
+from app.api.schemas import Book, BookBase
 from fastapi import APIRouter, HTTPException, Path
 
 router = APIRouter()
 
 
-@router.post("/", response_model=BookDB, status_code=201)
-async def create_book(payload: BookSchema):
+@router.post("/", response_model=Book, status_code=201)
+async def create_book(payload: BookBase):
     book_id = await crud.post(payload)
 
     response_object = {
@@ -19,7 +19,7 @@ async def create_book(payload: BookSchema):
     return response_object
 
 
-@router.get("/{id}/", response_model=BookDB)
+@router.get("/{id}/", response_model=Book)
 async def read_book(
     id: int = Path(..., gt=0),
 ):
@@ -29,14 +29,14 @@ async def read_book(
     return book
 
 
-@router.get("/", response_model=List[BookDB])
+@router.get("/", response_model=List[Book])
 async def read_all_books():
     return await crud.get_all()
 
 
-@router.put("/{id}/", response_model=BookDB)
+@router.put("/{id}/", response_model=Book)
 async def update_book(
-    payload: BookSchema,
+    payload: BookBase,
     id: int = Path(..., gt=0),
 ):
     book = await crud.get(id)
@@ -53,7 +53,7 @@ async def update_book(
     return response_object
 
 
-@router.delete("/{id}/", response_model=BookDB)
+@router.delete("/{id}/", response_model=Book)
 async def delete_book(id: int = Path(..., gt=0)):
     book = await crud.get(id)
     if not book:
