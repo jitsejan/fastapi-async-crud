@@ -27,4 +27,4 @@ $ uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 8000
 - https://testdriven.io/blog/fastapi-crud/
 - https://testdriven.io/blog/developing-a-single-page-app-with-flask-and-vuejs
 - https://bezkoder.com/vue-js-crud-app/
-- https://testdriven.io/blog/developing-a-single-page-app-with-flask-and-vuejs
+- https://www.encode.io/databases/
