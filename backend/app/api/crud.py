@@ -1,33 +1,40 @@
 from app.api.schemas import BookBase
 from app.db import database
-from app.models import books
-
+from app.models import Book
+import sqlalchemy as sa
 
 async def post(payload: BookBase):
-    query = books.insert().values(title=payload.title, author=payload.author)
-    return await database.execute(query=query)
+    values = {
+        'title': payload.title,
+        'author': payload.author,
+    }
+    query = sa.insert(Book)
+    return await database.execute(query=query, values=values)
 
 
 async def get(id: int):
-    query = books.select().where(id == books.c.id)
+    query = sa.select([Book]).where(id == Book.id)
     return await database.fetch_one(query=query)
 
 
 async def get_all():
-    query = books.select()
+    query = sa.select([Book])
     return await database.fetch_all(query=query)
 
 
 async def put(id: int, payload: BookBase):
+    values = {
+        'title': payload.title,
+        'author': payload.author,
+    }
     query = (
-        books.update()
-        .where(id == books.c.id)
-        .values(title=payload.title, author=payload.author)
-        .returning(books.c.id)
+        sa.update(Book)
+        .where(id == Book.id)
+        .returning(Book.id)
     )
-    return await database.execute(query=query)
+    return await database.execute(query=query, values=values)
 
 
 async def delete(id: int):
-    query = books.delete().where(id == books.c.id)
+    query = sa.delete(Book).where(id == Book.id)
     return await database.execute(query=query)
