@@ -1,9 +1,10 @@
 from app.api import books, healthcheck
-from app.db import database, engine, metadata
+from app.db import database, engine
+from app.models import metadata
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-metadata.create_all(engine)
+metadata.create_all(bind=engine)
 app = FastAPI()
 origins = [
     "http://localhost:8080",

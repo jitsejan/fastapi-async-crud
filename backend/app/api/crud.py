@@ -1,8 +1,9 @@
-from app.api.models import BookSchema
-from app.db import books, database
+from app.api.schemas import BookBase
+from app.db import database
+from app.models import books
 
 
-async def post(payload: BookSchema):
+async def post(payload: BookBase):
     query = books.insert().values(title=payload.title, author=payload.author)
     return await database.execute(query=query)
 
@@ -17,7 +18,7 @@ async def get_all():
     return await database.fetch_all(query=query)
 
 
-async def put(id: int, payload: BookSchema):
+async def put(id: int, payload: BookBase):
     query = (
         books.update()
         .where(id == books.c.id)
