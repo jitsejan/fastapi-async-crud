@@ -1,7 +1,9 @@
+import sqlalchemy as sa
+
 from app.api.schemas import BookBase
 from app.db import database
 from app.models import Book
-import sqlalchemy as sa
+
 
 async def post(payload: BookBase):
     values = {

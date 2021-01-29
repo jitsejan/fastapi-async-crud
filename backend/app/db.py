@@ -1,8 +1,7 @@
 import os
 
 from databases import Database
-from sqlalchemy import (Column, DateTime, Integer, String, Table,
-                        create_engine)
+from sqlalchemy import Column, DateTime, Integer, String, Table, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 
