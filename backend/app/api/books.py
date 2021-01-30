@@ -15,7 +15,7 @@ async def create_book(payload: BookBase):
     response_object = {
         "id": book_id,
         "title": payload.title,
-        "author": payload.author,
+        "authors": payload.authors,
     }
     return response_object
 

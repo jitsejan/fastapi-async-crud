@@ -1,3 +1,4 @@
+from datetime import datetime
 import sqlalchemy as sa
 
 from app.api.schemas import BookBase
@@ -8,10 +9,13 @@ from app.models import Book
 async def post(payload: BookBase):
     values = {
         'title': payload.title,
-        'author': payload.author,
     }
     query = sa.insert(Book)
-    return await database.execute(query=query, values=values)
+    for author in payload.authors:
+        print(author)
+
+    book_id = await database.execute(query=query, values=values)
+    return book_id
 
 
 async def get(id: int):
