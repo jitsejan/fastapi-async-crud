@@ -3,18 +3,14 @@ import sqlalchemy as sa
 
 from app.api.schemas import BookBase
 from app.db import database
-from app.models import Book
+from app.models import Book, Author, AuthorBook
 
 
 async def post(payload: BookBase):
-    values = {
-        'title': payload.title,
-    }
-    query = sa.insert(Book)
+    book_id = await database.execute(query=sa.insert(Book), values={'title': payload.title})
     for author in payload.authors:
-        print(author)
-
-    book_id = await database.execute(query=query, values=values)
+        author_id = await database.execute(query=sa.insert(Author), values={'name': author.name})
+        author_book = await database.execute(query=sa.insert(AuthorBook), values={'book_id': book_id, 'author_id': author_id})
     return book_id
 
 
@@ -24,9 +20,15 @@ async def get(id: int):
 
 
 async def get_all():
-    query = sa.select([Book])
+    query = sa.select([Book, Author])
     return await database.fetch_all(query=query)
+    # print(results)
+    # for result in results:
+    #     print(dir(result))
+    #     for key in result.keys():
+    #         print(key)
 
+        
 
 async def put(id: int, payload: BookBase):
     values = {

@@ -25,7 +25,8 @@ class Author(Base):
     __tablename__ = 'authors'
     id = Column(Integer, primary_key=True, unique=True)
     name = Column(String(80), nullable=False)
-
+    created_date = Column(DateTime, default=func.now(), nullable=False)
+    updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
     books = relationship("Book", secondary="assoc_author_book", viewonly=True)
 
     def __init__(self, name):
@@ -40,7 +41,9 @@ class Book(Base):
     __tablename__ = 'books'
     id = Column(Integer, primary_key=True, unique=True)
     title = Column(String(80), nullable=False)
-
+    created_date = Column(DateTime, default=func.now(), nullable=False)
+    updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
+    
     authors = relationship("Author", secondary="assoc_author_book", viewonly=True)
 
     def __init__(self, title):
