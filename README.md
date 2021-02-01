@@ -1,4 +1,4 @@
-# fastapi-async-crud
+# fastapi-postgres-crud-vuejs
 An experiment with FastAPI based on different blogposts.
 
 ## Frontend
