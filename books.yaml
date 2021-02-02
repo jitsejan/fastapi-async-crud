@@ -1,0 +1,40 @@
+books:
+  - title: Data Science for Business
+    publisher: O'Reilly Media
+    authors:
+        - Foster Provost
+        - Tom Fawcett
+  - title: Architecture Patterns with Python
+    publisher: O'Reilly Media
+    authors: 
+        - Harry J.W. Percival
+        - Bob Gregory
+  - title: The Enterprise Big Data Lake
+    publisher: O'Reilly Media
+    authors:
+        - Alex Gorelik
+  - title: Mastering Ethereum
+    publisher: O'Reilly Media
+    authors:
+        - Andreas M. Antonopoulos
+        - Dr. Gavin Wood
+  - title: Hands-On Smart Contract Development with Solidity & Ethereum
+    publisher: O'Reilly Media
+    authors:
+        - Kevin Solorio
+        - Randall Kanna
+        - David Hoover
+  - title: Learning SQL
+    publisher: O'Reilly Media
+    authors:
+        - Alan Beaulieu
+  - title: Python Essential Reference
+    publisher: Addison-Wesley Professional
+    authors:
+        - David M. Beazley
+  - title: Elements of Programming Interviews in Python
+    publisher: CreateSpace Independent Publishing Platform
+    authors:
+        - Adnan Aziz
+        - Tsung-Hsien Lee
+        - Amit Prakash

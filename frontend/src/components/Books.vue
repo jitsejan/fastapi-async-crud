@@ -11,14 +11,19 @@
           <thead>
             <tr>
               <th scope="col">Title</th>
-              <th scope="col">Author</th>
+              <th scope="col">Authors</th>
+              <th scope="col">Publisher</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(book, index) in books" :key="index">
               <td>{{ book.title }}</td>
-              <td>{{ book.author }}</td>
+              <td>
+                <div v-for="(author, index) in book.authors" :key="index">
+                  {{ author.name }}
+                </div>
+              </td>
               <td>
                 <div class="btn-group" role="group">
                   <button
@@ -36,6 +41,7 @@
                   </button>
                 </div>
               </td>
+              <td>{{ book.publisher }} </td>
             </tr>
           </tbody>
         </table>
@@ -57,15 +63,25 @@
           </b-form-input>
         </b-form-group>
         <b-form-group id="form-author-group"
-                      label="Author:"
+                      label="Authors:"
                       label-for="form-author-input">
             <b-form-input id="form-author-input"
                           type="text"
-                          v-model="addBookForm.author"
+                          v-model="addBookForm.authors"
                           required
                           placeholder="Enter author">
-            </b-form-input>
-          </b-form-group>
+          </b-form-input>
+        </b-form-group>
+        <b-form-group id="form-publisher-group"
+                      label="Publisher:"
+                      label-for="form-publisher-input">
+            <b-form-input id="form-publisher-input"
+                          type="text"
+                          v-model="addBookForm.publisher"
+                          required
+                          placeholder="Enter publisher">
+          </b-form-input>
+        </b-form-group>
         <b-button-group>
           <b-button type="submit" variant="primary">Submit</b-button>
           <b-button type="reset" variant="danger">Reset</b-button>
@@ -88,13 +104,23 @@
           </b-form-input>
         </b-form-group>
         <b-form-group id="form-author-edit-group"
-                      label="Author:"
+                      label="Authors:"
                       label-for="form-author-edit-input">
             <b-form-input id="form-author-edit-input"
                           type="text"
-                          v-model="editForm.author"
+                          v-model="editForm.authors"
                           required
-                          placeholder="Enter author">
+                          placeholder="Enter authors">
+            </b-form-input>
+          </b-form-group>
+        <b-form-group id="form-publisher-edit-group"
+                      label="Publisher:"
+                      label-for="form-publisher-edit-input">
+            <b-form-input id="form-publisher-edit-input"
+                          type="text"
+                          v-model="editForm.publisher"
+                          required
+                          placeholder="Enter publisher">
             </b-form-input>
           </b-form-group>
         <b-button-group>
@@ -117,13 +143,15 @@ export default {
       addBookForm: {
         title: '',
         author: '',
+        publisher: '',
       },
       message: '',
       showMessage: false,
       editForm: {
         id: '',
         title: '',
-        author: '',
+        authors: '',
+        publisher: '',
       },
     };
   },
@@ -156,18 +184,22 @@ export default {
     },
     initForm() {
       this.addBookForm.title = '';
-      this.addBookForm.author = '';
+      this.addBookForm.authors = '';
+      this.addBookForm.publisher = '';
       this.editForm.id = '';
       this.editForm.title = '';
-      this.editForm.author = '';
+      this.editForm.authors = '';
+      this.editForm.publisher = '';
     },
     onSubmit(evt) {
       evt.preventDefault();
       this.$refs.addBookModal.hide();
       const payload = {
         title: this.addBookForm.title,
-        author: this.addBookForm.author,
+        authors: this.addBookForm.authors,
+        publisher: this.addBookForm.publisher
       };
+      console.log(payload);
       this.addBook(payload);
       this.initForm();
     },

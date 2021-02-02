@@ -1,7 +1,7 @@
 from sqlalchemy import (Column, DateTime, ForeignKey, Integer, String, Table,
                         func)
 from sqlalchemy.orm import backref, relationship
-
+import yaml
 from .db import Base
 
 
@@ -27,14 +27,20 @@ class Author(Base):
     name = Column(String(80), nullable=False)
     created_date = Column(DateTime, default=func.now(), nullable=False)
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
-    books = relationship("Book", secondary="assoc_author_book", viewonly=True)
+    books = relationship("Book", secondary="assoc_author_book")
 
     def __init__(self, name):
         self.name = name
         self.books =[]
 
     def __repr__(self):
-        return f"<Book {self.name}>"
+        return f"<Author {self.name}>"
+
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }
 
 
 class Book(Base):
@@ -43,11 +49,12 @@ class Book(Base):
     title = Column(String(80), nullable=False)
     created_date = Column(DateTime, default=func.now(), nullable=False)
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
-    
-    authors = relationship("Author", secondary="assoc_author_book", viewonly=True)
+    publisher_id = Column(Integer, ForeignKey("publishers.id"))
+    authors = relationship("Author", secondary="assoc_author_book")
 
-    def __init__(self, title):
+    def __init__(self, title, publisher):
         self.title = title
+        self.publisher = publisher
         self.authors = []
 
     def __repr__(self):
@@ -61,6 +68,23 @@ class Book(Base):
         return {
             "id": self.id,
             "title": self.title,
-            "authors": [a.name for a in self.authors]
+            "publisher": self.publisher,
+            "authors": [a.as_dict() for a in self.authors]
         }
  
+
+class Publisher(Base):
+    __tablename__ = 'publishers'
+    id = Column(Integer, primary_key=True, unique=True)
+    name = Column(String(80), nullable=False)
+    books = relationship("Book", backref=backref("publisher"))
+    created_date = Column(DateTime, default=func.now(), nullable=False)
+    updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
+
+
+def load_data():
+    with open(r'books.yaml') as file:
+        documents = yaml.full_load(file)
+
+        for item, doc in documents.items():
+            print(item, ":", doc)
