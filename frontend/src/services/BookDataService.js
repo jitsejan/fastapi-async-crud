@@ -10,6 +10,7 @@ class BookDataService {
   }
 
   create(data) {
+    console.log(data);
     return http.post("/books", data);
   }
 

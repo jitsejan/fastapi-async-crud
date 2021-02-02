@@ -16,9 +16,11 @@ class Publisher(PublisherBase):
 
 class BookBase(BaseModel):
     title: str = Field(..., min_length=1, max_length=50)
+    authors: List[AuthorBase]
+    publisher: PublisherBase
+
+class Book(BaseModel):
+    id: int
+    title: str = Field(..., min_length=1, max_length=50)
     authors: List[Author]
     publisher: Publisher
-
-
-class Book(BookBase):
-    id: int

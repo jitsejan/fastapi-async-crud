@@ -9,16 +9,15 @@ from app.api.schemas import Book, BookBase
 router = APIRouter()
 
 
-@router.post("/", response_model=Book, status_code=201)
-def create_book(payload: BookBase):
+@router.post("/", response_model=BookBase, status_code=201)
+def create_book(payload: BookBase, db: Session = Depends(get_db)):
     print(payload)
-    book_id = crud.post(payload)
-
+    book_id = crud.post(db, payload)
     response_object = {
         "id": book_id,
         "title": payload.title,
-        "authors": payload.authors,
-        "publisher": payload.publisher
+        "publisher": payload.publisher,
+        "authors": payload.authors
     }
     return response_object
 
@@ -46,8 +45,9 @@ def read_all_books(db: Session = Depends(get_db)):
 def update_book(
     payload: BookBase,
     id: int = Path(..., gt=0),
+    db: Session = Depends(get_db)
 ):
-    book = crud.get(id)
+    book = crud.get(db, id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
 

@@ -68,7 +68,7 @@ class Book(Base):
         return {
             "id": self.id,
             "title": self.title,
-            "publisher": self.publisher,
+            "publisher": self.publisher.as_dict(),
             "authors": [a.as_dict() for a in self.authors]
         }
  
@@ -81,6 +81,17 @@ class Publisher(Base):
     created_date = Column(DateTime, default=func.now(), nullable=False)
     updated_date = Column(DateTime, default=func.now(), onupdate=func.now())
 
+    def __init__(self, name):
+        self.name = name
+
+    def __repr__(self):
+        return f"<Publisher {self.name}>"
+
+    def as_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+        }
 
 def load_data():
     with open(r'books.yaml') as file:

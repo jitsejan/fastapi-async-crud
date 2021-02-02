@@ -20,10 +20,11 @@
             <tr v-for="(book, index) in books" :key="index">
               <td>{{ book.title }}</td>
               <td>
-                <div v-for="(author, index) in book.authors" :key="index">
-                  {{ author.name }}
-                </div>
+                <ul v-for="(author, index) in book.authors" :key="index">
+                  <li>{{ author.name }}</li>
+                </ul>
               </td>
+              <td>{{ book.publisher.name }} </td>
               <td>
                 <div class="btn-group" role="group">
                   <button
@@ -41,7 +42,6 @@
                   </button>
                 </div>
               </td>
-              <td>{{ book.publisher }} </td>
             </tr>
           </tbody>
         </table>
@@ -56,7 +56,7 @@
                     label="Title:"
                     label-for="form-title-input">
           <b-form-input id="form-title-input"
-                        type="text"
+                        type="text" 
                         v-model="addBookForm.title"
                         required
                         placeholder="Enter title">
@@ -69,7 +69,7 @@
                           type="text"
                           v-model="addBookForm.authors"
                           required
-                          placeholder="Enter author">
+                          placeholder="Enter authors">
           </b-form-input>
         </b-form-group>
         <b-form-group id="form-publisher-group"
@@ -118,7 +118,7 @@
                       label-for="form-publisher-edit-input">
             <b-form-input id="form-publisher-edit-input"
                           type="text"
-                          v-model="editForm.publisher"
+                          v-model="editForm.publisher.name"
                           required
                           placeholder="Enter publisher">
             </b-form-input>
@@ -142,7 +142,7 @@ export default {
       books: [],
       addBookForm: {
         title: '',
-        author: '',
+        authors: '',
         publisher: '',
       },
       message: '',
@@ -194,12 +194,20 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.$refs.addBookModal.hide();
+      const authors_in = this.addBookForm.authors.split(",");
+      const authors_out = []
+      authors_in.forEach((author) => {
+          authors_out.push({
+            'name': author
+          })
+      });
       const payload = {
         title: this.addBookForm.title,
-        authors: this.addBookForm.authors,
-        publisher: this.addBookForm.publisher
+        authors: authors_out,
+        publisher: {
+          name: this.addBookForm.publisher
+        }
       };
-      console.log(payload);
       this.addBook(payload);
       this.initForm();
     },
@@ -216,7 +224,10 @@ export default {
       this.$refs.editBookModal.hide();
       const payload = {
         title: this.editForm.title,
-        author: this.editForm.author,
+        authors: this.editForm.authors,
+        publisher: {
+          'name': this.editForm.publisher
+        }
       };
       this.updateBook(payload, this.editForm.id);
     },
