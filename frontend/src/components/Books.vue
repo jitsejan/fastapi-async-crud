@@ -3,10 +3,17 @@
     <div class="row">
       <div class="col-sm-10">
         <h1>Books</h1>
-        <hr><br><br>
-        <alert :message=message v-if="showMessage"></alert>
-        <button type="button" class="btn btn-success btn-sm" v-b-modal.book-modal>Add Book</button>
-        <br><br>
+        <hr />
+        <br /><br />
+        <alert :message="message" v-if="showMessage"></alert>
+        <button
+          type="button"
+          class="btn btn-success btn-sm"
+          v-b-modal.book-modal
+        >
+          Add Book
+        </button>
+        <br /><br />
         <table class="table table-hover">
           <thead>
             <tr>
@@ -20,25 +27,29 @@
             <tr v-for="(book, index) in books" :key="index">
               <td>{{ book.title }}</td>
               <td>
-                <ul v-for="(author, index) in book.authors" :key="index">
-                  <li>{{ author.name }}</li>
+                <ul>
+                  <li v-for="(author, index) in book.authors" :key="index">
+                    {{ author.name }}
+                  </li>
                 </ul>
               </td>
-              <td>{{ book.publisher.name }} </td>
+              <td>{{ book.publisher.name }}</td>
               <td>
                 <div class="btn-group" role="group">
                   <button
-                          type="button"
-                          class="btn btn-warning btn-sm"
-                          v-b-modal.book-update-modal
-                          @click="editBook(book)">
-                      Update
+                    type="button"
+                    class="btn btn-warning btn-sm"
+                    v-b-modal.book-update-modal
+                    @click="editBook(book)"
+                  >
+                    Update
                   </button>
                   <button
-                          type="button"
-                          class="btn btn-danger btn-sm"
-                          @click="onDeleteBook(book)">
-                      Delete
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    @click="onDeleteBook(book)"
+                  >
+                    Delete
                   </button>
                 </div>
               </td>
@@ -47,39 +58,62 @@
         </table>
       </div>
     </div>
-    <b-modal ref="addBookModal"
-            id="book-modal"
-            title="Add a new book"
-            hide-footer>
+    <b-modal
+      ref="addBookModal"
+      id="book-modal"
+      title="Add a new book"
+      hide-footer
+    >
       <b-form @submit="onSubmit" @reset="onReset" class="w-100">
-      <b-form-group id="form-title-group"
-                    label="Title:"
-                    label-for="form-title-input">
-          <b-form-input id="form-title-input"
-                        type="text" 
-                        v-model="addBookForm.title"
-                        required
-                        placeholder="Enter title">
+        <b-form-group
+          id="form-title-group"
+          label="Title:"
+          label-for="form-title-input"
+        >
+          <b-form-input
+            id="form-title-input"
+            type="text"
+            v-model="addBookForm.title"
+            required
+            placeholder="Enter title"
+          >
           </b-form-input>
         </b-form-group>
-        <b-form-group id="form-author-group"
-                      label="Authors:"
-                      label-for="form-author-input">
-            <b-form-input id="form-author-input"
-                          type="text"
-                          v-model="addBookForm.authors"
-                          required
-                          placeholder="Enter authors">
-          </b-form-input>
+        <b-form-group
+          id="form-author-group"
+          label="Authors:"
+          label-for="form-author-input"
+        >
+          <ul>
+            <li v-for="(author, index) in authors" :key="index">
+              <b-form-input
+                id="form-author-input"
+                type="text"
+                value=""
+                required
+                v-model="author.name"
+                placeholder="Enter author"
+              >
+              </b-form-input>
+              <span>
+                <font-awesome-icon :icon="['fas', 'user-minus']" class="icon alt" @click="remove(index)" v-show="index || ( !index && authors.length > 1)"/>
+                <font-awesome-icon :icon="['fas', 'user-plus']" class="icon alt" @click="add(index, author.name)" v-show="index == authors.length-1" />
+               </span>
+            </li>
+          </ul>
         </b-form-group>
-        <b-form-group id="form-publisher-group"
-                      label="Publisher:"
-                      label-for="form-publisher-input">
-            <b-form-input id="form-publisher-input"
-                          type="text"
-                          v-model="addBookForm.publisher"
-                          required
-                          placeholder="Enter publisher">
+        <b-form-group
+          id="form-publisher-group"
+          label="Publisher:"
+          label-for="form-publisher-input"
+        >
+          <b-form-input
+            id="form-publisher-input"
+            type="text"
+            v-model="addBookForm.publisher"
+            required
+            placeholder="Enter publisher"
+          >
           </b-form-input>
         </b-form-group>
         <b-button-group>
@@ -88,43 +122,66 @@
         </b-button-group>
       </b-form>
     </b-modal>
-    <b-modal ref="editBookModal"
-            id="book-update-modal"
-            title="Update"
-            hide-footer>
+    <b-modal
+      ref="editBookModal"
+      id="book-update-modal"
+      title="Update"
+      hide-footer
+    >
       <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
-      <b-form-group id="form-title-edit-group" label="Title:" label-for="form-title-edit-input">
-          <b-form-input id="form-title-edit-input"
-                        type="text"
-                        v-model="editForm.title"
-                        required
-                        placeholder="Enter title">
+        <b-form-group
+          id="form-title-edit-group"
+          label="Title:"
+          label-for="form-title-edit-input"
+        >
+          <b-form-input
+            id="form-title-edit-input"
+            type="text"
+            v-model="editForm.title"
+            required
+            placeholder="Enter title"
+          >
           </b-form-input>
         </b-form-group>
-        <b-form-group id="form-author-edit-group" label="Authors:" label-for="form-author-edit-input">
+        <b-form-group
+          id="form-author-edit-group"
+          label="Authors:"
+          label-for="form-author-edit-input"
+        >
           <div v-for="(author, index) in editForm.authors" :key="index">
-              <b-form-input id="form-author-edit-input" type="text"
-                          required
-                        placeholder="Enter authors" :value="author.name.trim()">
-              </b-form-input>
+            <b-form-input
+              id="form-author-edit-input"
+              type="text"
+              required
+              placeholder="Enter authors"
+              :value="author.name.trim()"
+            >
+            </b-form-input>
+            <span>
+              <font-awesome-icon :icon="['fas', 'user-minus']" class="icon alt" @click="remove(index)" v-show="index || ( !index && authors.length > 1)"/>
+              <font-awesome-icon :icon="['fas', 'user-plus']" class="icon alt" @click="add(index, author.name)" v-show="index == authors.length-1" />
+              </span>
           </div>
-            <!-- <b-form-input id="form-author-edit-input" type="text"
+          <!-- <b-form-input id="form-author-edit-input" type="text"
                           v-model="editForm.authors"
                           required
                           placeholder="Enter authors">
             </b-form-input> -->
-            
         </b-form-group>
-        <b-form-group id="form-publisher-edit-group"
-                      label="Publisher:"
-                      label-for="form-publisher-edit-input">
-            <b-form-input id="form-publisher-edit-input"
-                          type="text"
-                          v-model="editForm.publisher.name"
-                          required
-                          placeholder="Enter publisher">
-            </b-form-input>
-          </b-form-group>
+        <b-form-group
+          id="form-publisher-edit-group"
+          label="Publisher:"
+          label-for="form-publisher-edit-input"
+        >
+          <b-form-input
+            id="form-publisher-edit-input"
+            type="text"
+            v-model="editForm.publisher.name"
+            required
+            placeholder="Enter publisher"
+          >
+          </b-form-input>
+        </b-form-group>
         <b-button-group>
           <b-button type="submit" variant="primary">Update</b-button>
           <b-button type="reset" variant="danger">Cancel</b-button>
@@ -135,25 +192,33 @@
 </template>
 
 <script>
-import Alert from './Alert.vue';
+import Alert from "./Alert.vue";
 import BookDataService from "../services/BookDataService";
+import {
+  faUserMinus,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
+import { library } from "@fortawesome/fontawesome-svg-core";
+library.add([faUserMinus, faUserPlus]);
 
 export default {
   data() {
     return {
+      authors: [{
+        'name': "",
+      }],
       books: [],
       addBookForm: {
-        title: '',
-        authors: '',
-        publisher: '',
+        title: "",
+        publisher: "",
       },
-      message: '',
+      message: "",
       showMessage: false,
       editForm: {
-        id: '',
-        title: '',
-        authors: '',
-        publisher: '',
+        id: "",
+        title: "",
+        authors: [],
+        publisher: "",
       },
     };
   },
@@ -161,6 +226,14 @@ export default {
     alert: Alert,
   },
   methods: {
+    add (index, name) {
+      this.authors.push({
+        name: name,
+      })
+    },
+    remove (index) {
+      this.authors.splice(index, 1)
+    },
     getBooks() {
       BookDataService.getAll()
         .then((res) => {
@@ -175,7 +248,7 @@ export default {
       BookDataService.create(payload)
         .then(() => {
           this.getBooks();
-          this.message = 'Book added!';
+          this.message = "Book added!";
           this.showMessage = true;
         })
         .catch((error) => {
@@ -185,30 +258,29 @@ export default {
         });
     },
     initForm() {
-      this.addBookForm.title = '';
-      this.addBookForm.authors = '';
-      this.addBookForm.publisher = '';
-      this.editForm.id = '';
-      this.editForm.title = '';
-      this.editForm.authors = '';
-      this.editForm.publisher = '';
+      this.authors = [
+        {
+          name: ""
+        }
+      ];
+      this.addBookForm.title = "";
+      this.addBookForm.authors = "";
+      this.addBookForm.publisher = "";
+      this.editForm.id = "";
+      this.editForm.title = "";
+      this.editForm.authors = "";
+      this.editForm.publisher = "";
     },
     onSubmit(evt) {
       evt.preventDefault();
       this.$refs.addBookModal.hide();
-      const authors_in = this.addBookForm.authors.split(",");
-      const authors_out = []
-      authors_in.forEach((author) => {
-          authors_out.push({
-            'name': author.trim()
-          })
-      });
+      console.log(this.authors);
       const payload = {
         title: this.addBookForm.title,
-        authors: authors_out,
+        authors: this.authors,
         publisher: {
-          name: this.addBookForm.publisher
-        }
+          name: this.addBookForm.publisher,
+        },
       };
       this.addBook(payload);
       this.initForm();
@@ -220,9 +292,9 @@ export default {
     },
     editBook(book) {
       this.editForm = book;
-      var authors_names = []
+      var authors_names = [];
       book.authors.forEach((author) => {
-          authors_names.push(author.name)
+        authors_names.push(author.name);
       });
       this.editForm.author_names = authors_names.join(", ");
     },
@@ -231,18 +303,18 @@ export default {
       this.$refs.editBookModal.hide();
       const authors_in = this.editForm.authors.split(",");
       console.log(authors_in);
-      const authors_out = []
+      const authors_out = [];
       authors_in.forEach((author) => {
-          authors_out.push({
-            name: author.trim(),
-          })
+        authors_out.push({
+          name: author.trim(),
+        });
       });
       const payload = {
         title: this.editForm.title,
         authors: authors_out,
         publisher: {
           name: this.editForm.publisher.name,
-        }
+        },
       };
       console.log(payload);
       console.log(this.editForm.id);
@@ -252,7 +324,7 @@ export default {
       BookDataService.update(bookID, payload)
         .then(() => {
           this.getBooks();
-          this.message = 'Book updated!';
+          this.message = "Book updated!";
           this.showMessage = true;
         })
         .catch((error) => {
@@ -271,7 +343,7 @@ export default {
       BookDataService.delete(bookID)
         .then(() => {
           this.getBooks();
-          this.message = 'Book removed!';
+          this.message = "Book removed!";
           this.showMessage = true;
         })
         .catch((error) => {
@@ -289,3 +361,13 @@ export default {
   },
 };
 </script>
+
+<style>
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  margin: 0 10px;
+}
+</style>
