@@ -10,11 +10,11 @@ class BookDataService {
   }
 
   create(data) {
-    console.log(data);
     return http.post("/books", data);
   }
 
   update(id, data) {
+    console.log("calling update now")
     return http.put(`/books/${id}`, data);
   }
 

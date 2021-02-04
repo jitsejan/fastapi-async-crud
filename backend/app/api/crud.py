@@ -20,21 +20,25 @@ def post(db: Session, payload: BookBase):
 def get(db: Session, id: int):
     return db.query(Book).filter(Book.id == id).first()
 
+def get_author_by_name(db: Session, name: str):
+    return db.query(Author).filter(Author.name == name).first()
+
 def get_all(db: Session):
     return db.query(Book).all()        
 
-def put(id: int, payload: Book):
-    print(payload)
+def put(id: int, payload: BookBase):
+    print("payload", payload)
     values = {
         'title': payload.title,
         'authors': payload.authors,
     }
+
     # query = (
     #     sa.update(Book)
     #     .where(id == Book.id)
     #     .returning(Book.id)
     # )
-    # return await database.execute(query=query, values=values)
+    return id
 
 
 def delete(db: Session, id: id):

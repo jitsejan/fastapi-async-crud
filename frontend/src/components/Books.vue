@@ -93,9 +93,7 @@
             title="Update"
             hide-footer>
       <b-form @submit="onSubmitUpdate" @reset="onResetUpdate" class="w-100">
-      <b-form-group id="form-title-edit-group"
-                    label="Title:"
-                    label-for="form-title-edit-input">
+      <b-form-group id="form-title-edit-group" label="Title:" label-for="form-title-edit-input">
           <b-form-input id="form-title-edit-input"
                         type="text"
                         v-model="editForm.title"
@@ -103,16 +101,20 @@
                         placeholder="Enter title">
           </b-form-input>
         </b-form-group>
-        <b-form-group id="form-author-edit-group"
-                      label="Authors:"
-                      label-for="form-author-edit-input">
-            <b-form-input id="form-author-edit-input"
-                          type="text"
+        <b-form-group id="form-author-edit-group" label="Authors:" label-for="form-author-edit-input">
+          <div v-for="(author, index) in editForm.authors" :key="index">
+              <b-form-input id="form-author-edit-input" type="text"
+                          required
+                        placeholder="Enter authors" :value="author.name.trim()">
+              </b-form-input>
+          </div>
+            <!-- <b-form-input id="form-author-edit-input" type="text"
                           v-model="editForm.authors"
                           required
                           placeholder="Enter authors">
-            </b-form-input>
-          </b-form-group>
+            </b-form-input> -->
+            
+        </b-form-group>
         <b-form-group id="form-publisher-edit-group"
                       label="Publisher:"
                       label-for="form-publisher-edit-input">
@@ -198,7 +200,7 @@ export default {
       const authors_out = []
       authors_in.forEach((author) => {
           authors_out.push({
-            'name': author
+            'name': author.trim()
           })
       });
       const payload = {
@@ -218,17 +220,32 @@ export default {
     },
     editBook(book) {
       this.editForm = book;
+      var authors_names = []
+      book.authors.forEach((author) => {
+          authors_names.push(author.name)
+      });
+      this.editForm.author_names = authors_names.join(", ");
     },
     onSubmitUpdate(evt) {
       evt.preventDefault();
       this.$refs.editBookModal.hide();
+      const authors_in = this.editForm.authors.split(",");
+      console.log(authors_in);
+      const authors_out = []
+      authors_in.forEach((author) => {
+          authors_out.push({
+            name: author.trim(),
+          })
+      });
       const payload = {
         title: this.editForm.title,
-        authors: this.editForm.authors,
+        authors: authors_out,
         publisher: {
-          'name': this.editForm.publisher
+          name: this.editForm.publisher.name,
         }
       };
+      console.log(payload);
+      console.log(this.editForm.id);
       this.updateBook(payload, this.editForm.id);
     },
     updateBook(payload, bookID) {
@@ -248,7 +265,7 @@ export default {
       evt.preventDefault();
       this.$refs.editBookModal.hide();
       this.initForm();
-      this.getBooks(); // why?
+      this.getBooks();
     },
     removeBook(bookID) {
       BookDataService.delete(bookID)

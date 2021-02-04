@@ -47,12 +47,15 @@ def update_book(
     id: int = Path(..., gt=0),
     db: Session = Depends(get_db)
 ):
+    print("PP>")
     book = crud.get(db, id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
 
     book_id = crud.put(id, payload)
-
+    for a in payload.authors:
+        author = crud.get_author_by_name(db=db, name=a)
+        print(author)
     response_object = {
         "id": book_id,
         "title": payload.title,
