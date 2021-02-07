@@ -97,7 +97,7 @@
               </b-form-input>
               <span>
                 <font-awesome-icon :icon="['fas', 'user-minus']" class="icon alt" @click="remove(index)" v-show="index || ( !index && authors.length > 1)"/>
-                <font-awesome-icon :icon="['fas', 'user-plus']" class="icon alt" @click="add(index, author.name)" v-show="index == authors.length-1" />
+                <font-awesome-icon :icon="['fas', 'user-plus']" class="icon alt" @click="add()" v-show="index == authors.length-1" />
                </span>
             </li>
           </ul>
@@ -148,7 +148,7 @@
           label="Authors:"
           label-for="form-author-edit-input"
         >
-          <div v-for="(author, index) in editForm.authors" :key="index">
+          <div v-for="(author, index) in this.authors" :key="index">
             <b-form-input
               id="form-author-edit-input"
               type="text"
@@ -159,14 +159,9 @@
             </b-form-input>
             <span>
               <font-awesome-icon :icon="['fas', 'user-minus']" class="icon alt" @click="remove(index)" v-show="index || ( !index && authors.length > 1)"/>
-              <font-awesome-icon :icon="['fas', 'user-plus']" class="icon alt" @click="add(index, author.name)" v-show="index == authors.length-1" />
+              <font-awesome-icon :icon="['fas', 'user-plus']" class="icon alt" @click="add()" v-show="index == authors.length-1" />
               </span>
           </div>
-          <!-- <b-form-input id="form-author-edit-input" type="text"
-                          v-model="editForm.authors"
-                          required
-                          placeholder="Enter authors">
-            </b-form-input> -->
         </b-form-group>
         <b-form-group
           id="form-publisher-edit-group"
@@ -205,7 +200,7 @@ export default {
   data() {
     return {
       authors: [{
-        'name': "",
+        name: "",
       }],
       books: [],
       addBookForm: {
@@ -226,9 +221,9 @@ export default {
     alert: Alert,
   },
   methods: {
-    add (index, name) {
+    add () {
       this.authors.push({
-        name: name,
+        name: "",
       })
     },
     remove (index) {
@@ -292,26 +287,20 @@ export default {
     },
     editBook(book) {
       this.editForm = book;
+      this.authors = book.authors;
+      console.log(this.authors);
       var authors_names = [];
       book.authors.forEach((author) => {
-        authors_names.push(author.name);
+        authors_names.push(author.name.trim());
       });
       this.editForm.author_names = authors_names.join(", ");
     },
     onSubmitUpdate(evt) {
       evt.preventDefault();
       this.$refs.editBookModal.hide();
-      const authors_in = this.editForm.authors.split(",");
-      console.log(authors_in);
-      const authors_out = [];
-      authors_in.forEach((author) => {
-        authors_out.push({
-          name: author.trim(),
-        });
-      });
       const payload = {
         title: this.editForm.title,
-        authors: authors_out,
+        authors: this.authors,
         publisher: {
           name: this.editForm.publisher.name,
         },
