@@ -10,9 +10,8 @@ router = APIRouter()
 
 
 @router.post("/", response_model=BookBase, status_code=201)
-def create_book(payload: BookBase, db: Session = Depends(get_db)):
-    print(payload)
-    book_id = crud.post(db, payload)
+def create_book(payload: BookBase, session: Session = Depends(get_db)):
+    book_id = crud.post_book(session=session, payload=payload)
     response_object = {
         "id": book_id,
         "title": payload.title,
@@ -24,19 +23,19 @@ def create_book(payload: BookBase, db: Session = Depends(get_db)):
 
 @router.get("/{id}/", response_model=Book)
 def read_book(
-    db: Session = Depends(get_db),
+    session: Session = Depends(get_db),
     id: int = Path(..., gt=0)
 ):
-    book = crud.get(db, id)
+    book = crud.get_book_by_id(db, id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
     return book.as_dict()
 
 
 @router.get("/", response_model=List[Book])
-def read_all_books(db: Session = Depends(get_db)):
+def read_all_books(session: Session = Depends(get_db)):
     result = []
-    for book in crud.get_all(db):
+    for book in crud.get_all_books(session=session):
         result.append(book.as_dict())
     return result
 
@@ -45,16 +44,17 @@ def read_all_books(db: Session = Depends(get_db)):
 def update_book(
     payload: BookBase,
     id: int = Path(..., gt=0),
-    db: Session = Depends(get_db)
+    session: Session = Depends(get_db)
 ):
     print("PP>")
-    book = crud.get(db, id)
+    print(payload)
+    book = crud.get_book_by_id(session=session, id=id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
 
-    book_id = crud.put(id, payload)
+    book_id = crud.put_book(session, id, payload)
     for a in payload.authors:
-        author = crud.get_author_by_name(db=db, name=a)
+        author = crud.get_author_by_name(session=session, name=a)
         print(author)
     response_object = {
         "id": book_id,
@@ -66,11 +66,11 @@ def update_book(
 
 
 @router.delete("/{id}/")
-def delete_book(db: Session = Depends(get_db), id: int = Path(..., gt=0)):
-    book = crud.get(db, id)
+def delete_book(session: Session = Depends(get_db), id: int = Path(..., gt=0)):
+    book = crud.get_book_by_id(session=session, id=id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
 
-    crud.delete(db, id)
+    crud.delete_book_by_id(session=session, id=id)
 
     return {}

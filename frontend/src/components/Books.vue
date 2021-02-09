@@ -79,6 +79,7 @@
           >
           </b-form-input>
         </b-form-group>
+        <pre>{{ this.authors }}</pre>
         <b-form-group
           id="form-author-group"
           label="Authors:"
@@ -143,6 +144,7 @@
           >
           </b-form-input>
         </b-form-group>
+        <pre>{{ this.authors }}</pre>
         <b-form-group
           id="form-author-edit-group"
           label="Authors:"
@@ -153,6 +155,7 @@
               id="form-author-edit-input"
               type="text"
               required
+              v-model="author.name"
               placeholder="Enter authors"
               :value="author.name.trim()"
             >
@@ -298,6 +301,7 @@ export default {
     onSubmitUpdate(evt) {
       evt.preventDefault();
       this.$refs.editBookModal.hide();
+      console.log(this.editForm.authors);
       const payload = {
         title: this.editForm.title,
         authors: this.authors,
