@@ -272,7 +272,6 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.$refs.addBookModal.hide();
-      console.log(this.authors);
       const payload = {
         title: this.addBookForm.title,
         authors: this.authors,
@@ -280,6 +279,7 @@ export default {
           name: this.addBookForm.publisher,
         },
       };
+      this.authors.map(s => s.trim());
       this.addBook(payload);
       this.initForm();
     },
@@ -292,11 +292,6 @@ export default {
       this.editForm = book;
       this.authors = book.authors;
       console.log(this.authors);
-      var authors_names = [];
-      book.authors.forEach((author) => {
-        authors_names.push(author.name.trim());
-      });
-      this.editForm.author_names = authors_names.join(", ");
     },
     onSubmitUpdate(evt) {
       evt.preventDefault();

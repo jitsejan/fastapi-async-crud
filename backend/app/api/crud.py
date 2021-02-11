@@ -34,17 +34,15 @@ def get_all_books(session: Session):
     return session.query(Book).all()        
 
 def put_book(session: Session, id: int, payload: BookBase):
+    print("crud.put_book")
     print("payload", payload)
     values = {
         'title': payload.title,
         'authors': payload.authors,
     }
 
-    # query = (
-    #     sa.update(Book)
-    #     .where(id == Book.id)
-    #     .returning(Book.id)
-    # )
+    query = session.query(Book).update(values).where(id == Book.id).returning(Book.id)
+    
     return id
 
 
