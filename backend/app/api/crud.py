@@ -34,12 +34,6 @@ def get_all_books(session: Session):
     return session.query(Book).all()        
 
 def put_book(session: Session, id: int, payload: BookBase, book: Book):
-    print("crud.put_book")
-    print("payload", payload)
-    print("Existing book")
-    print(book.as_dict())
-    print(book.assoc_author_book)
-    # book_id = crud.put_book(session, id, payload)
     new_authors = [y for y in payload.authors if y.id not in [x.id for x in book.authors]]
     authors = []
     for a in new_authors:
@@ -53,27 +47,14 @@ def put_book(session: Session, id: int, payload: BookBase, book: Book):
     for a in deleted_authors:
         author = get_author_by_name(session=session, name=a.name)
         book.authors.remove(author)
+    
     changed_authors = [y for y in payload.authors if y.id in [x.id for x in book.authors]]
-    print("new", new_authors)
-    print("changed", changed_authors)
-    print("deleted", deleted_authors)
+    for a in changed_authors:
+        author = session.query(Author).filter(Author.id == a.id).one()
+        author.name = a.name
+    
     session.add(book)
     session.commit()
-    # for a in payload.authors:
-    #     print("AUTHOR", a)
-    #     author = crud.get_author_by_name(session=session, name=a)
-    #     print(author)
-
-
-# # row will be deleted from the "secondary" table
-# # automatically
-# myparent.children.remove(somechild)
-    # values = {
-    #     'title': payload.title,
-    #     'authors': payload.authors,
-    # }
-
-    # query = session.query(Book).update(values).where(id == Book.id).returning(Book.id)
     
     return id
 
