@@ -42,30 +42,22 @@ def read_all_books(session: Session = Depends(get_db)):
 
 @router.put("/{id}/", response_model=Book)
 def update_book(
-    payload: BookBase,
+    payload: Book,
     id: int = Path(..., gt=0),
     session: Session = Depends(get_db)
 ):
-    new_data = payload.dict(exclude_unset=True)
-    print("Changed book:")
-    print(new_data)
     book = crud.get_book_by_id(session=session, id=id)
     if not book:
         raise HTTPException(status_code=404, detail="Book not found")
- 
-    print("Existing book")
-    print(book.as_dict())
-    book_id = crud.put_book(session, id, payload)
-    # for a in payload.authors:
-    #     author = crud.get_author_by_name(session=session, name=a)
-    #     print(author)
-    response_object = {
-        "id": book_id,
+
+    crud.put_book(session=session, id=id, payload=payload, book=book)
+
+    return {
+        "id": id,
         "title": payload.title,
         "authors": payload.authors,
         "publisher": payload.publisher
     }
-    return response_object
 
 
 @router.delete("/{id}/")

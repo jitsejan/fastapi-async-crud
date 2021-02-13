@@ -227,6 +227,7 @@ export default {
     add () {
       this.authors.push({
         name: "",
+        id: -1,
       })
     },
     remove (index) {
@@ -272,6 +273,7 @@ export default {
     onSubmit(evt) {
       evt.preventDefault();
       this.$refs.addBookModal.hide();
+      this.authors.map(s => s.name = s.name.trim())
       const payload = {
         title: this.addBookForm.title,
         authors: this.authors,
@@ -279,7 +281,6 @@ export default {
           name: this.addBookForm.publisher,
         },
       };
-      this.authors.map(s => s.trim());
       this.addBook(payload);
       this.initForm();
     },
@@ -291,21 +292,20 @@ export default {
     editBook(book) {
       this.editForm = book;
       this.authors = book.authors;
-      console.log(this.authors);
     },
     onSubmitUpdate(evt) {
       evt.preventDefault();
       this.$refs.editBookModal.hide();
-      console.log(this.editForm.authors);
+      this.authors.map(s => s.name = s.name.trim())
       const payload = {
+        id: this.editForm.id,
         title: this.editForm.title,
         authors: this.authors,
         publisher: {
+          id: this.editForm.publisher.id,
           name: this.editForm.publisher.name,
         },
       };
-      console.log(payload);
-      console.log(this.editForm.id);
       this.updateBook(payload, this.editForm.id);
     },
     updateBook(payload, bookID) {
