@@ -52,7 +52,7 @@ def put_book(session: Session, id: int, payload: BookBase, book: Book):
     deleted_authors = [y for y in book.authors if y.id not in [x.id for x in payload.authors]]
     for a in deleted_authors:
         author = get_author_by_name(session=session, name=a.name)
-        book.authors.delete(author)
+        book.authors.remove(author)
     changed_authors = [y for y in payload.authors if y.id in [x.id for x in book.authors]]
     print("new", new_authors)
     print("changed", changed_authors)
