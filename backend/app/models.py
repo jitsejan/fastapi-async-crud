@@ -1,6 +1,8 @@
 from sqlalchemy import (Column, DateTime, ForeignKey, Integer, String, Table,
                         func)
 from sqlalchemy.orm import backref, relationship
+from typing import List
+
 import yaml
 from .db import Base
 
@@ -60,8 +62,8 @@ class Book(Base):
     def __repr__(self):
         return f"<Book {self.title}>"
     
-    def add_authors(self, items):
-        for author in items:
+    def add_authors(self, authors: List[Author]):
+        for author in authors:
             self.assoc_author_book.append(AuthorBook(book=self, author=author))
 
     def as_dict(self):

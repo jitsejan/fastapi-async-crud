@@ -12,13 +12,13 @@ router = APIRouter()
 @router.post("/", response_model=BookBase, status_code=201)
 def create_book(payload: BookBase, session: Session = Depends(get_db)):
     book_id = crud.post_book(session=session, payload=payload)
-    response_object = {
+    
+    return {
         "id": book_id,
         "title": payload.title,
         "publisher": payload.publisher,
         "authors": payload.authors
     }
-    return response_object
 
 
 @router.get("/{id}/", response_model=Book)
@@ -34,10 +34,7 @@ def read_book(
 
 @router.get("/", response_model=List[Book])
 def read_all_books(session: Session = Depends(get_db)):
-    result = []
-    for book in crud.get_all_books(session=session):
-        result.append(book.as_dict())
-    return result
+    return [book.as_dict() for book in crud.get_all_books(session=session)]
 
 
 @router.put("/{id}/", response_model=Book)
