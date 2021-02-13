@@ -14,8 +14,6 @@ class BookDataService {
   }
 
   update(id, data) {
-    console.log("calling update now")
-    console.log(data);
     return http.put(`/books/${id}`, data);
   }
 

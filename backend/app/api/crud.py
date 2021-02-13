@@ -24,8 +24,14 @@ def post_book(session: Session, payload: BookBase):
 def get_book_by_id(session: Session, id: int):
     return session.query(Book).filter(Book.id == id).first()
 
+def get_author_by_id(session: Session, id: int):
+    return session.query(Author).filter(Author.id == id).first()
+
 def get_author_by_name(session: Session, name: str):
     return session.query(Author).filter(Author.name == name).first()
+
+def get_publisher_by_id(session: Session, id: int):
+    return session.query(Publisher).filter(Publisher.id == id).first()
 
 def get_publisher_by_name(session: Session, name: str):
     return session.query(Publisher).filter(Publisher.name == name).first()
@@ -50,9 +56,15 @@ def put_book(session: Session, id: int, payload: BookBase, book: Book):
     
     changed_authors = [y for y in payload.authors if y.id in [x.id for x in book.authors]]
     for a in changed_authors:
-        author = session.query(Author).filter(Author.id == a.id).one()
+        author = get_author_by_id(session=session, id=a.id)
         author.name = a.name
     
+    
+    publisher = get_publisher_by_id(session=session, id=payload.publisher.id)
+    publisher.name = payload.publisher.name
+
+    book.title = payload.title
+
     session.add(book)
     session.commit()
     
